@@ -1,0 +1,29 @@
+# env
+.env
+
+# local data
+recordings/
+
+# python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# os
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+logs/
+
+# editor
+.vscode/
+.idea/
+*.swp
+*.swo
