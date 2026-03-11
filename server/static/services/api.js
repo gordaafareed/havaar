@@ -1,25 +1,27 @@
 export const api = {
     async getStatus() { return _get('/api/status') },
-    async getCalls() { return _get('/api/calls') },
-    async getContacts() { return _get('/api/contacts') },
+    async getThreads() { return _get('/api/threads') },
+    async getThread(safeId) { return _get(`/api/threads/${safeId}`) },
 
-    async markListened(sid) { return _post(`/api/calls/${sid}/listened`) },
+    async markListened(entryId) { return _post(`/api/threads/${entryId}/listened`) },
+    async deleteIncoming(entryId) { return _delete(`/api/threads/${entryId}`) },
     async setLabel(safeId, label) { return _post(`/api/contacts/${safeId}/label`, { label }) },
 
-    async uploadOutbound(safeId, blob) { return _uploadAudio(`/api/outbound/${safeId}`, blob) },
+    async uploadReply(safeId, blob) { return _uploadAudio(`/api/reply/${safeId}`, blob) },
     async uploadDefault(blob) { return _uploadAudio('/api/outbound/default', blob) },
-    async deleteOutbound(safeId) { return _delete(`/api/outbound/${safeId}`) },
     async deleteDefault() { return _delete('/api/outbound/default') },
 
     async logout() { return _post('/logout') },
 
+    async deleteOutgoing(entryId) { return _delete(`/api/reply/${entryId}`) },
+
     incomingUrl: (filename) => `/api/audio/incoming/${filename}`,
-    outboundUrl: (safeId) => `/api/audio/outbound/${safeId}.wav`,
+    outgoingUrl: (filename) => `/api/audio/outgoing/${filename}`,
     defaultUrl: () => `/api/audio/outbound/default.wav`,
 }
 
 async function _get(url) {
-    const res = await fetch(url)
+    const res = await fetch(url, { credentials: 'include' })
     if (!res.ok) throw new Error(`GET ${url} → ${res.status}`)
     return res.json()
 }
@@ -27,6 +29,7 @@ async function _get(url) {
 async function _post(url, body) {
     const res = await fetch(url, {
         method: 'POST',
+        credentials: 'include',
         headers: body ? { 'Content-Type': 'application/json' } : {},
         body: body ? JSON.stringify(body) : undefined,
     })
@@ -35,7 +38,7 @@ async function _post(url, body) {
 }
 
 async function _delete(url) {
-    const res = await fetch(url, { method: 'DELETE' })
+    const res = await fetch(url, { method: 'DELETE', credentials: 'include' })
     if (!res.ok) throw new Error(`DELETE ${url} → ${res.status}`)
     return res.json()
 }
@@ -43,7 +46,7 @@ async function _delete(url) {
 async function _uploadAudio(url, blob) {
     const form = new FormData()
     form.append('audio', blob, 'recording.webm')
-    const res = await fetch(url, { method: 'POST', body: form })
+    const res = await fetch(url, { method: 'POST', credentials: 'include', body: form })
     if (!res.ok) throw new Error(`UPLOAD ${url} → ${res.status}`)
     return res.json()
 }

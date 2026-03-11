@@ -6,18 +6,18 @@ import Main from './components/Main.js'
 
 export default {
     components: { TopBar, Sidebar, 'main-view': Main },
+
     setup() {
         async function refresh() {
             try {
-                const [status, calls, contacts] = await Promise.all([
+                const [status, data] = await Promise.all([
                     api.getStatus(),
-                    api.getCalls(),
-                    api.getContacts(),
+                    api.getThreads(),
                 ])
                 store.status.live = status.ok
-                store.status.defaultExists = status.default_greeting
-                store.calls = calls
-                store.contacts = contacts
+                store.status.defaultExists = status.default_exists
+                store.threads = data.threads
+                store.contacts = data.contacts
             } catch {
                 store.status.live = false
             }
@@ -25,16 +25,16 @@ export default {
 
         refresh()
         setInterval(refresh, 8000)
-
         return { store }
     },
+
     template: `
-        <div id="shell">
-            <top-bar />
-            <div class="layout">
-                <sidebar />
-                <main-view />
-            </div>
-        </div>
-    `
+    <div id="shell">
+      <top-bar />
+      <div class="layout">
+        <sidebar />
+        <main-view />
+      </div>
+    </div>
+  `
 }

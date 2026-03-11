@@ -1,30 +1,29 @@
 import { reactive } from 'vue'
 
 export const store = reactive({
-    calls: [],
+    threads: {},
     contacts: {},
     activeSafeId: null,
+
     status: {
         live: false,
         defaultExists: false,
     },
+
     recording: {
         active: false,
-        target: null,     // 'reply' | 'default'
         seconds: '0:00',
     },
-    playback: {
-        filename: null,
-        progress: 0,
-    },
 
-    get activeCalls() {
+    get activeThread() {
         if (!this.activeSafeId) return []
-        return this.calls.filter(c => c.safe_id === this.activeSafeId)
+        return this.threads[this.activeSafeId] ?? []
     },
 
     get activeCaller() {
-        return this.activeCalls[0]?.caller ?? null
+        const t = this.activeThread
+        const entry = t.find(e => e.caller)
+        return entry?.caller ?? this.activeSafeId
     },
 
     get activeLabel() {
@@ -32,15 +31,22 @@ export const store = reactive({
     },
 
     get unreadCount() {
-        return this.calls.filter(c => !c.listened).length
+        let count = 0
+        for (const thread of Object.values(this.threads)) {
+            count += thread.filter(e => e.type === 'incoming' && !e.listened).length
+        }
+        return count
     },
 
-    get groupedCalls() {
-        const groups = {}
-        for (const c of this.calls) {
-            if (!groups[c.safe_id]) groups[c.safe_id] = []
-            groups[c.safe_id].push(c)
-        }
-        return groups
+    get callerList() {
+        return Object.entries(this.threads).map(([safeId, thread]) => {
+            const latest = [...thread].reverse().find(e => e.timestamp)
+            const unread = thread.some(e => e.type === 'incoming' && !e.listened)
+            const caller = thread.find(e => e.caller)?.caller ?? safeId
+            const label = this.contacts[safeId]?.label ?? ''
+            return { safeId, caller, label, latest, unread }
+        }).sort((a, b) =>
+            new Date(b.latest?.timestamp ?? 0) - new Date(a.latest?.timestamp ?? 0)
+        )
     },
 })

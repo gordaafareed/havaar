@@ -1,30 +1,25 @@
-import { relTime } from '../services/format.js'
 import { store } from '../store.js'
+import { relTime } from '../services/format.js'
 
 export default {
-    props: {
-        safeId: { type: String, required: true },
-        calls: { type: Array, required: true },
-    },
-    emits: ['select'],
-    setup(props, { emit }) {
-        const label = () => store.contacts[props.safeId]?.label ?? ''
-        const latest = () => props.calls[0]
-        const unread = () => props.calls.some(c => !c.listened)
-        const active = () => store.activeSafeId === props.safeId
-
-        return { label, latest, unread, active, relTime, emit }
-    },
-    template: `
+  props: {
+    item: { type: Object, required: true },
+  },
+  emits: ['select'],
+  setup(props, { emit }) {
+    const active = () => store.activeSafeId === props.item.safeId
+    return { active, relTime, emit }
+  },
+  template: `
     <div
       class="call-item"
-      :class="{ active: active(), unread: unread() }"
-      @click="emit('select', safeId)"
+      :class="{ active: active(), unread: item.unread }"
+      @click="emit('select', item.safeId)"
     >
-      <div class="call-number">{{ latest().caller }}</div>
-      <div class="call-label" v-if="label()">{{ label() }}</div>
-      <div class="call-time">
-        {{ relTime(latest().timestamp) }} · {{ calls.length }} call{{ calls.length > 1 ? 's' : '' }}
+      <div class="call-number">{{ item.caller }}</div>
+      <div class="call-label" v-if="item.label">{{ item.label }}</div>
+      <div class="call-time" v-if="item.latest">
+        {{ relTime(item.latest.timestamp) }}
       </div>
     </div>
   `

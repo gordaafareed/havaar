@@ -523,3 +523,113 @@ body {
     background: var(--border2);
     border-radius: 2px;
 }
+
+/* ── thread ── */
+.thread-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+}
+
+.thread-empty {
+    text-align: center;
+    color: var(--dim);
+    font-size: 11px;
+    margin-top: 40px;
+    letter-spacing: 0.1em;
+}
+
+.thread-msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+}
+
+.msg-in {
+    align-self: flex-start;
+}
+
+.msg-out {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.msg-bubble {
+    padding: 12px 14px;
+    border-radius: 2px;
+}
+
+.msg-in .msg-bubble {
+    background: rgba(192, 57, 43, 0.08);
+    border-left: 2px solid var(--accent);
+}
+
+.msg-out .msg-bubble {
+    background: rgba(230, 126, 34, 0.08);
+    border-right: 2px solid var(--yellow);
+}
+
+.msg-waveform {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    min-width: 220px;
+}
+
+.msg-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--dim);
+    gap: 12px;
+}
+
+.msg-delete {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.msg-delete:hover {
+    color: var(--accent);
+}
+
+.msg-ghost {
+    font-size: 10px;
+    color: var(--dim2);
+    font-style: italic;
+    padding: 4px 8px;
+    border-right: 2px solid var(--dim2);
+    align-self: flex-end;
+}
+
+/* ── record bar ── */
+.record-bar {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.record-bar-hint {
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.05em;
+}
