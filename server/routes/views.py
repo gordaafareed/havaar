@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, send_from_directory
+from flask import Blueprint, session, redirect, url_for, send_from_directory, current_app
 import pathlib
 
 views_bp = Blueprint("views", __name__)
@@ -14,3 +14,10 @@ def dashboard():
 @views_bp.route("/login")
 def login_page():
     return send_from_directory(STATIC_DIR, "login.html")
+
+@views_bp.route("/public/audio/<filename>")
+def public_audio(filename):
+    path = pathlib.Path(current_app.config["RECORDINGS_OUT"]) / filename
+    if not path.exists():
+        return ("", 404)
+    return send_from_directory(current_app.config["RECORDINGS_OUT"], filename)
