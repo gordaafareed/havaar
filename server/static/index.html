@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>havaar</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <!-- services -->
+    <script type="module">
+        import App from '/static/app.js'
+        const { createApp } = Vue
+        createApp(App).mount('#app')
+    </script>
+</body>
+
+</html>
