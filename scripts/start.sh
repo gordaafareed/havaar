@@ -83,4 +83,4 @@ echo ""
 trap "kill $TUNNEL_PID 2>/dev/null; echo '  [stopped]'" EXIT
 
 cd "$ROOT_DIR"
-python3 -m server.app
+FLASK_ENV=development FLASK_APP=server/app.py flask run --host=0.0.0.0 --port=$PORT --reload

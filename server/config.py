@@ -19,6 +19,8 @@ class Config:
     TWILIO_TOKEN       = os.environ.get("TWILIO_AUTH_TOKEN")
     TWILIO_PHONE       = os.environ.get("TWILIO_PHONE_NUMBER")
     PORT               = int(os.environ.get("PORT", 5050))
-    RECORDINGS_DIR     = pathlib.Path(os.environ.get("RECORDINGS_DIR", str(BASE_DIR / "recordings")))
+    RECORDINGS_DIR = pathlib.Path(
+        os.environ.get("RECORDINGS_DIR", str(BASE_DIR / "recordings"))
+    ).resolve()
     RECORDINGS_IN      = RECORDINGS_DIR / "incoming"
     RECORDINGS_OUT     = RECORDINGS_DIR / "outbound"

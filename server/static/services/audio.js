@@ -5,16 +5,26 @@ let _audio = null
 let _progCb = null
 let _progInterval = null
 
-export function playUrl(url, onProgress, onEnd) {
+export async function playUrl(url, onProgress, onEnd) {
     stopPlayback()
-    _audio = new Audio(url + '?t=' + Date.now())
+
+    const res = await fetch(url, { credentials: 'include' })
+    if (!res.ok) throw new Error(`audio fetch failed: ${res.status}`)
+    const blob = await res.blob()
+    const objectUrl = URL.createObjectURL(blob)
+
+    _audio = new Audio(objectUrl)
     _progCb = onProgress
     _audio.play()
     _progInterval = setInterval(() => {
         if (_audio && _audio.duration && _progCb)
             _progCb(_audio.currentTime / _audio.duration)
     }, 200)
-    _audio.onended = () => { stopPlayback(); onEnd?.() }
+    _audio.onended = () => {
+        URL.revokeObjectURL(objectUrl)
+        stopPlayback()
+        onEnd?.()
+    }
 }
 
 export function stopPlayback() {
