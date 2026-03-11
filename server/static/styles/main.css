@@ -34,6 +34,20 @@ body {
     overflow: hidden;
 }
 
+#shell {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
 /* ── topbar ── */
 .topbar {
     display: flex;
@@ -131,16 +145,18 @@ body {
     display: flex;
     flex: 1;
     overflow: hidden;
+    min-height: 0;
 }
 
 /* ── sidebar ── */
 .sidebar {
-    width: 280px;
+    width: 320px;
     flex-shrink: 0;
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-height: 0;
 }
 
 .sidebar-header {
@@ -149,6 +165,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-shrink: 0;
 }
 
 .sidebar-title {
@@ -172,6 +189,7 @@ body {
 .call-list {
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
     scrollbar-width: thin;
     scrollbar-color: var(--border2) transparent;
 }
@@ -235,6 +253,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-height: 0;
 }
 
 .main-header {
@@ -285,6 +304,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 28px;
+    min-height: 0;
     scrollbar-width: thin;
     scrollbar-color: var(--border2) transparent;
 }

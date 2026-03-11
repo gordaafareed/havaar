@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>havaar</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --panel: #111111;
+            --border: #222222;
+            --text: #e0e0e0;
+            --dim: #555;
+            --accent: #c0392b;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box {
+            width: 340px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 40px;
+        }
+
+        .title {
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 32px;
+        }
+
+        .title span {
+            color: var(--accent);
+        }
+
+        input[type=password] {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            padding: 12px 14px;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.15s;
+        }
+
+        input[type=password]:focus {
+            border-color: var(--accent);
+        }
+
+        button {
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 12px;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .err {
+            font-size: 11px;
+            color: var(--accent);
+            margin-top: 12px;
+            min-height: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="title"><span>//</span> havaar</div>
+        <input type="password" id="pw" placeholder="password" autofocus />
+        <button onclick="login()">enter</button>
+        <div class="err" id="err"></div>
+    </div>
+    <script>
+        document.getElementById('pw').addEventListener('keydown', e => {
+            if (e.key === 'Enter') login();
+        });
+
+        async function login() {
+            const pw = document.getElementById('pw').value;
+            const err = document.getElementById('err');
+            err.textContent = '';
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pw })
+            });
+            if (res.ok) {
+                window.location.href = '/';
+            } else {
+                err.textContent = 'access denied';
+                document.getElementById('pw').value = '';
+                document.getElementById('pw').focus();
+            }
+        }
+    </script>
+</body>
+
+</html>

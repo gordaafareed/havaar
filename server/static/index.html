@@ -11,12 +11,17 @@
 <body>
     <div id="app"></div>
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
+          }
+        }
+    </script>
 
-    <!-- services -->
     <script type="module">
+        import { createApp } from 'vue'
         import App from '/static/app.js'
-        const { createApp } = Vue
         createApp(App).mount('#app')
     </script>
 </body>
