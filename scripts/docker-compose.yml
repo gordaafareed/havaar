@@ -1,0 +1,11 @@
+services:
+  havaar:
+    build:
+      context: ..
+      dockerfile: scripts/Dockerfile
+    ports:
+      - "5050:5050"
+    volumes:
+      - ../recordings:/app/recordings
+      - ../.env:/app/.env
+    restart: unless-stopped
