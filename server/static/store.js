@@ -15,6 +15,12 @@ export const store = reactive({
         seconds: '0:00',
     },
 
+    broadcast: {
+        live: false,
+        draft: false,
+        meta: null,
+    },
+
     get activeThread() {
         if (!this.activeSafeId) return []
         return this.threads[this.activeSafeId] ?? []

@@ -15,6 +15,14 @@ export const api = {
 
     async deleteOutgoing(entryId) { return _delete(`/api/reply/${entryId}`) },
 
+    async uploadBroadcastDraft(blob) { return _uploadAudio('/api/broadcast/draft', blob) },
+    async publishBroadcast(title) { return _post('/api/broadcast/publish', { title }) },
+    async unpublishBroadcast() { return _post('/api/broadcast/unpublish') },
+    async deleteBroadcastDraft() { return _delete('/api/broadcast/draft') },
+
+    broadcastLiveUrl: () => `/api/audio/outbound/broadcast_live.wav`,
+    broadcastDraftUrl: () => `/api/audio/outbound/broadcast_draft.wav`,
+
     incomingUrl: (filename) => `/api/audio/incoming/${filename}`,
     outgoingUrl: (filename) => `/api/audio/outgoing/${filename}`,
     defaultUrl: () => `/api/audio/outbound/default.wav`,
@@ -50,3 +58,4 @@ async function _uploadAudio(url, blob) {
     if (!res.ok) throw new Error(`UPLOAD ${url} → ${res.status}`)
     return res.json()
 }
+

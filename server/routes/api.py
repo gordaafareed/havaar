@@ -117,7 +117,59 @@ def delete_default():
 @api_bp.route("/status")
 def status():
     return jsonify({
-        "ok":             True,
-        "twilio_sid_set": bool(current_app.config["TWILIO_SID"]),
-        "default_exists": storage.default_exists(),
+        "ok":               True,
+        "twilio_sid_set":   bool(current_app.config["TWILIO_SID"]),
+        "default_exists":   storage.default_exists(),
+        "broadcast_live":   storage.broadcast_live_exists(),
+        "broadcast_draft":  storage.broadcast_draft_exists(),
+        "broadcast_meta":   storage.get_broadcast_meta(),
     })
+
+# ── broadcast ──────────────────────────────────────────────────────────────────
+
+@api_bp.route("/broadcast/draft", methods=["POST"])
+@login_required
+def upload_broadcast_draft():
+    if "audio" not in request.files:
+        return jsonify({"error": "no audio"}), 400
+    storage.save_broadcast_draft(request.files["audio"].read())
+    return jsonify({"ok": True})
+
+
+@api_bp.route("/broadcast/publish", methods=["POST"])
+@login_required
+def publish_broadcast():
+    data  = request.get_json()
+    title = data.get("title", "").strip() if data else ""
+    if not title:
+        return jsonify({"error": "title required"}), 400
+    try:
+        storage.publish_broadcast(title)
+    except FileNotFoundError:
+        return jsonify({"error": "no draft to publish"}), 400
+    return jsonify({"ok": True})
+
+
+@api_bp.route("/broadcast/unpublish", methods=["POST"])
+@login_required
+def unpublish_broadcast():
+    storage.unpublish_broadcast()
+    return jsonify({"ok": True})
+
+
+@api_bp.route("/broadcast/draft", methods=["DELETE"])
+@login_required
+def delete_broadcast_draft():
+    storage.delete_broadcast_draft()
+    return jsonify({"ok": True})
+
+
+@api_bp.route("/broadcast/meta")
+@login_required
+def broadcast_meta():
+    return jsonify(storage.get_broadcast_meta())
+
+@api_bp.route("/audio/outbound/<filename>")
+@login_required
+def serve_outbound(filename):
+    return send_from_directory(current_app.config["RECORDINGS_OUT"], filename)

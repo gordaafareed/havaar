@@ -633,3 +633,47 @@ body {
     color: var(--dim);
     letter-spacing: 0.05em;
 }
+
+/* ── broadcast ── */
+.broadcast-panel {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.broadcast-live {
+    background: rgba(230, 126, 34, 0.06);
+    border-left: 2px solid var(--yellow);
+    padding: 10px 12px;
+}
+
+.broadcast-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.broadcast-title {
+    font-size: 11px;
+    color: var(--text);
+}
+
+.broadcast-meta-time {
+    font-size: 10px;
+    color: var(--dim);
+}
+
+.broadcast-none {
+    font-size: 10px;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.broadcast-draft {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    margin-top: 14px;
+}

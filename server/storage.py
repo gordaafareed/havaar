@@ -223,3 +223,57 @@ def save_default(data: bytes) -> None:
 
 def default_exists() -> bool:
     return (recordings_out() / "default.wav").exists()
+
+
+# ── broadcast ────────────────────────────────────────────────────────────────
+
+def broadcast_live_path() -> pathlib.Path:
+    return recordings_out() / "broadcast_live.wav"
+
+def broadcast_draft_path() -> pathlib.Path:
+    return recordings_out() / "broadcast_draft.wav"
+
+def broadcast_live_exists() -> bool:
+    return broadcast_live_path().exists()
+
+def broadcast_draft_exists() -> bool:
+    return broadcast_draft_path().exists()
+
+def save_broadcast_draft(data: bytes) -> None:
+    tmp  = recordings_out() / "broadcast_draft_tmp.webm"
+    path = broadcast_draft_path()
+    tmp.write_bytes(data)
+    subprocess.run([
+        "ffmpeg", "-i", str(tmp),
+        "-ar", "8000", "-ac", "1",
+        "-y", str(path)
+    ], check=True, capture_output=True)
+    tmp.unlink()
+
+def publish_broadcast(title: str) -> None:
+    draft = broadcast_draft_path()
+    if not draft.exists():
+        raise FileNotFoundError("no draft to publish")
+    draft.rename(broadcast_live_path())
+    meta = load_meta()
+    meta["broadcast"] = {
+        "title":     title,
+        "published": datetime.utcnow().isoformat(),
+    }
+    save_meta(meta)
+
+def unpublish_broadcast() -> None:
+    path = broadcast_live_path()
+    if path.exists():
+        path.unlink()
+    meta = load_meta()
+    meta.pop("broadcast", None)
+    save_meta(meta)
+
+def get_broadcast_meta() -> dict:
+    return load_meta().get("broadcast", None)
+
+def delete_broadcast_draft() -> None:
+    path = broadcast_draft_path()
+    if path.exists():
+        path.unlink()

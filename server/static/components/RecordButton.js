@@ -24,6 +24,8 @@ export default {
                 if (props.target === 'default') {
                     await api.uploadDefault(blob)
                     store.status.defaultExists = true
+                } else if (props.target === 'broadcast') {
+                    await api.uploadBroadcastDraft(blob)
                 } else {
                     await api.uploadOutbound(props.safeId, blob)
                 }
