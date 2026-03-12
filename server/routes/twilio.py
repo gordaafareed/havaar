@@ -26,12 +26,21 @@ def incoming():
 
     response = VoiceResponse()
 
-    pending = storage.get_pending_replies(safe_id)
+    greeting = storage.recordings_out() / "greeting.wav"
+    if greeting.exists():
+        response.play(request.url_root + "public/audio/greeting.wav")
 
+    pending = storage.get_pending_replies(safe_id)
     for reply in pending:
         if reply.get("filename"):
-            url = request.url_root + f"public/audio/{reply['filename']}"
-            response.play(url)
+            response.play(request.url_root + f"public/audio/{reply['filename']}")
+
+    gather = response.gather(
+        num_digits = 1,
+        timeout    = 2,
+        action     = request.url_root + "twilio/check-skip",
+        method     = "POST",
+    )
 
     response.record(
         action                           = request.url_root + "twilio/recording-done",
@@ -42,6 +51,25 @@ def incoming():
         recording_status_callback_method = "POST",
     )
 
+    return Response(str(response), mimetype="text/xml")
+
+
+@twilio_bp.route("/check-skip", methods=["POST"])
+def check_skip():
+    digit    = request.form.get("Digits", "")
+    response = VoiceResponse()
+    if digit == "*":
+        response.hangup()
+    else:
+        # any other key — proceed to record
+        response.record(
+            action                           = request.url_root + "twilio/recording-done",
+            method                           = "POST",
+            max_length                       = 120,
+            play_beep                        = True,
+            recording_status_callback        = request.url_root + "twilio/recording-ready",
+            recording_status_callback_method = "POST",
+        )
     return Response(str(response), mimetype="text/xml")
 
 
