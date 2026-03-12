@@ -61,8 +61,8 @@ Farhad
 
 - Python 3.9+
 - ffmpeg (for audio conversion)
-- A Twilio account and phone number (paid, not trial)
-- One of the three deployment options below
+- A Twilio account and phone number
+- One of the deployment options below
 - Optional: a Telegram bot for notifications
 
 ---
