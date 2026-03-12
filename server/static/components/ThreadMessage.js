@@ -5,52 +5,52 @@ import { playUrl, stopPlayback } from '../services/audio.js'
 import { relTime } from '../services/format.js'
 
 export default {
-    props: {
-        entry: { type: Object, required: true },
-    },
-    emits: ['deleted'],
-    setup(props, { emit }) {
-        const progress = ref(0)
-        const playing = ref(false)
+  props: {
+    entry: { type: Object, required: true },
+  },
+  emits: ['deleted'],
+  setup(props, { emit }) {
+    const progress = ref(0)
+    const playing = ref(false)
 
-        const isIncoming = () => props.entry.type === 'incoming'
-        const hasAudio = () => !!props.entry.filename
-        const isGhost = () => props.entry.type === 'outgoing' && !props.entry.filename
+    const isIncoming = () => props.entry.type === 'incoming'
+    const hasAudio = () => !!props.entry.filename
+    const isGhost = () => props.entry.type === 'outgoing' && !props.entry.filename
 
-        async function togglePlay() {
-            if (playing.value) {
-                stopPlayback()
-                playing.value = false
-                progress.value = 0
-                return
-            }
-            const url = isIncoming()
-                ? api.incomingUrl(props.entry.filename)
-                : api.outgoingUrl(props.entry.filename)
+    async function togglePlay() {
+      if (playing.value) {
+        stopPlayback()
+        playing.value = false
+        progress.value = 0
+        return
+      }
+      const url = isIncoming()
+        ? api.incomingUrl(props.entry.filename)
+        : api.outgoingUrl(props.entry.filename)
 
-            playing.value = true
-            await playUrl(
-                url,
-                p => { progress.value = p * 100 },
-                () => { playing.value = false; progress.value = 0 }
-            )
-        }
+      playing.value = true
+      await playUrl(
+        url,
+        p => { progress.value = p * 100 },
+        () => { playing.value = false; progress.value = 0 }
+      )
+    }
 
-        async function deleteEntry() {
-            if (isIncoming()) {
-                if (!confirm('Delete this message?')) return
-                await api.deleteIncoming(props.entry.id)
-                emit('deleted', props.entry.id)
-            } else {
-                if (!confirm('Delete this reply? The caller will not hear it.')) return
-                await api.deleteOutgoing(props.entry.id)
-                emit('deleted', props.entry.id)
-            }
-        }
+    async function deleteEntry() {
+      if (isIncoming()) {
+        if (!confirm('Delete this message?')) return
+        await api.deleteIncoming(props.entry.id)
+        emit('deleted', props.entry.id)
+      } else {
+        if (!confirm('Delete this reply? The caller will not hear it.')) return
+        await api.deleteOutgoing(props.entry.id)
+        emit('deleted', props.entry.id)
+      }
+    }
 
-        return { isIncoming, hasAudio, isGhost, playing, progress, togglePlay, deleteEntry, relTime }
-    },
-    template: `
+    return { isIncoming, hasAudio, isGhost, playing, progress, togglePlay, deleteEntry, relTime }
+  },
+  template: `
     <div class="thread-msg" :class="isIncoming() ? 'msg-in' : 'msg-out'">
 
       <!-- ghost outgoing -->
@@ -80,6 +80,11 @@ export default {
                 @click="deleteEntry"
             >delete</button>
         </div>
+      </div>
+
+      <!-- panic alert -->
+      <div v-if="entry.type === 'panic'" class="msg-panic">
+        🚨 panic alert · {{ relTime(entry.timestamp) }}
       </div>
 
     </div>

@@ -677,3 +677,13 @@ body {
     padding-top: 14px;
     margin-top: 14px;
 }
+
+.msg-panic {
+    align-self: flex-start;
+    background: rgba(192, 57, 43, 0.15);
+    border-left: 3px solid #c0392b;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #c0392b;
+    letter-spacing: 0.05em;
+}

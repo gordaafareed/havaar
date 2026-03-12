@@ -277,3 +277,21 @@ def delete_broadcast_draft() -> None:
     path = broadcast_draft_path()
     if path.exists():
         path.unlink()
+
+# ── panic ────────────────────────────────────────────────────────────────
+
+def log_panic(caller: str) -> None:
+    meta    = load_meta()
+    safe_id = safe_caller_id(caller)
+    ensure_contact(meta, caller, safe_id)
+    entry = {
+        "id":        f"panic_{safe_id}_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
+        "type":      "panic",
+        "caller":    caller,
+        "safe_id":   safe_id,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+    if safe_id not in meta["threads"]:
+        meta["threads"][safe_id] = []
+    meta["threads"][safe_id].append(entry)
+    save_meta(meta)

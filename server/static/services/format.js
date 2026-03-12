@@ -1,8 +1,9 @@
 export function relTime(iso) {
     if (!iso) return ''
-    const d = new Date(iso)
+    const d = new Date(iso.endsWith('Z') ? iso : iso + 'Z')
     if (isNaN(d.getTime())) return ''
-    const diff = Date.now() - d
+    const diff = Date.now() - d.getTime()
+    if (diff < 0) return 'just now'
     if (diff < 60000) return 'just now'
     if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
     if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`
