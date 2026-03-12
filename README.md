@@ -10,6 +10,8 @@ Built for situations where internet is cut but outbound mobile calls are still p
 **This tool does not guarantee safety, anonymity, or security for anyone using it.**
 
 - Calls made through this system pass through Twilio's infrastructure. Twilio is a US company and complies with legal requests. Call records, phone numbers, and audio may be accessible to third parties under legal compulsion.
+- **If using a Twilio trial account**, callers will hear "This call is from Twilio's trial account —
+press 1 to execute your code" before anything else plays. The caller then needs to press 1. It also reveals that the system runs on Twilio. Upgrade to a paid account to remove it entirely.
 - Phone numbers are visible to the server operator. If you run this, you are responsible for protecting that data.
 - This tool is intended for personal use between people who trust each other. It is not designed for large-scale anonymous communication.
 - Running this does not make you or callers anonymous.
